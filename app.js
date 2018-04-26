@@ -18,7 +18,7 @@ app.use(cookieParser());
 
 /**********请求路径变配置**********/
 //加载前端项目程序到服务器
-app.use('/',express.static(path.join(__dirname,'client')));
+app.use('/', express.static(path.join(__dirname, 'client')));
 //请求配置
 app.get('/login', LoginService.login);
 app.get('/register', LoginService.register);
@@ -31,12 +31,12 @@ app.get('/findPassword', LoginService.findPassword);
 
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

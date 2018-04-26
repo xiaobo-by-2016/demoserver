@@ -1,10 +1,17 @@
 var express = require('express');
-var router = express.Router();
-router.post
+
+var SmsService = require('./SmsService')
+
 var LoginService = {
     login: function (req, res, next) {
-
-        res.send('login');
+        SmsService.sendSmsRegister('18428369049',function(smsResult){
+            if(smsResult.Code == 'OK'){
+                res.send('短信发送成功！！！')
+            }else{
+                res.send('短信发送成功！！！')
+            }
+        });
+        
 
     },
     register: function (req, res, next) {
