@@ -25,7 +25,7 @@ app.get('/register', LoginService.register);
 app.get('/findPassword', LoginService.findPassword);
 
 
-
+console.log(new Date().getTime())
 
 
 
