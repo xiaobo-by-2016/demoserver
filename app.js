@@ -6,12 +6,8 @@ var logger = require('morgan');
 
 
 /**********请求路径变量**********/
-var loginRouter = require('./routes/login/login');
-var registerRouter = require('./routes/login/register');
-var findPasswordRouter = require('./routes/login/findPassword');
+var LoginService = require('./services/LoginService')
 
-
-var mysql = require('./mysql/sqlActions');
 
 var app = express();
 app.use(logger('dev'));
@@ -24,9 +20,9 @@ app.use(cookieParser());
 //加载前端项目程序到服务器
 app.use('/',express.static(path.join(__dirname,'client')));
 //请求配置
-app.use('/login', loginRouter);
-app.use('/register', registerRouter);
-app.use('/findPassword', findPasswordRouter);
+app.get('/login', LoginService.login);
+app.get('/register', LoginService.register);
+app.get('/findPassword', LoginService.findPassword);
 
 
 
