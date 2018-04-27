@@ -23,7 +23,7 @@ app.use('/', express.static(path.join(__dirname, 'client')));
 app.post('/login', LoginService.login);
 app.get('/register', LoginService.register);
 app.get('/findPassword', LoginService.findPassword);
-app.post('/getVailCode', LoginService.getVailCode);
+app.post('/getVailCode', LoginService.sendSmsCode);
 
 
 console.log(new Date().getTime())

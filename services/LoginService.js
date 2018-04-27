@@ -44,6 +44,7 @@ var LoginService = {
             req.body.userPhone,
             req.body.userPassword
             ], function (err, results, fields) {
+
                 if (err) {
                     res.send({
                         success: false,
@@ -51,11 +52,20 @@ var LoginService = {
                         message: err
                     })
                 } else {
-                    res.send({
-                        success: true,
-                        userInfo: results,
-                        message: '登陆成功',
-                    })
+                    if (results.length == 1) {
+                        res.send({
+                            success: true,
+                            userInfo: results,
+                            message: '登陆成功',
+                        })
+                    } else {
+                        res.send({
+                            success: true,
+                            userInfo: results,
+                            message: '账号信息不正确',
+                        })
+                    }
+
                 }
             })
     },
@@ -70,12 +80,12 @@ var LoginService = {
 
     },
     /*
-    *注册验证码操作
+    *验证码
     *1）验证表中改该手机号是否存在记录，无->新增   有->更新
     *2）发送短信成功后 更新码值
+        参数： userPhone:目标手机号  smsActnStat： 1：注册  2：找回
     */
-    getVailCode: function (req, res, next) {
-        console.log(req.body.userPhone);
+    sendSmsCode: function (req, res, next) {
         sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.isValiCodeStr, [
             req.body.userPhone
         ], function (err, results, fields) {
@@ -88,10 +98,13 @@ var LoginService = {
             } else {
                 //查询成功
                 var code = LoginService.getRandomCode(4);//四位随机数
-                SmsService.sendSmsRegister(req.body.userPhone, code, function (smsResult) {
+                SmsService.sendSmsRegister({
+                    templateParam: code,
+                    phoneNumbers: req.body.userPhone,
+                    templateIndex: req.body.smsActnStat
+                }, function (smsResult) {
                     if (JSON.parse(smsResult).Code == 'OK') {
-                        console.log( results )
-                        if (results[0] !== null) {
+                        if (results.length == 1) {
                             //该手机号存在验证码记录
                             sqlActions.updateActions.update(sqlObj.updateCode, [
                                 code,
@@ -101,7 +114,7 @@ var LoginService = {
                                 if (err) {
                                     res.send({
                                         success: false,
-                                        message: '存在验证码记录,更新失败'
+                                        message: '验证码发送成功,更新失败'
                                     })
                                 } else {
                                     res.send({
@@ -113,19 +126,19 @@ var LoginService = {
                         } else {
                             //该手机号无验证码记录
                             sqlActions.insertActions.insert(sqlObj.insertCode, {
-                                vali_code: cdode,
+                                vali_code: code,
                                 vali_time: new Date().getTime(),
                                 vali_code_phone: req.body.userPhone
                             }, function (err, results, fields) {
-                                if(err){
+                                if (err) {
                                     res.send({
                                         success: false,
-                                        message: '该手机号无验证码记录，新增失败'
+                                        message: '验证码发送成功，新增失败'
                                     })
-                                }else{
+                                } else {
                                     res.send({
                                         success: true,
-                                        message: '验证码发送成功,验证码新增成'
+                                        message: '验证码发送成功,新增成功'
                                     })
                                 }
                             })
@@ -140,6 +153,9 @@ var LoginService = {
             }
         })
     },
+    /*
+    *四位随机数
+    */
     getRandomCode: function (n) {
         var randomCode = "";
         for (var i = 0; i < n; i++)
