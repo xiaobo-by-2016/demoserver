@@ -6,7 +6,7 @@ var pool = mysql.createPool({
     connectionLimit: 10,
     host: 'localhost',
     user: 'root',
-    password: '123456',
+    password: 'root',
     database: 'myapp'
 });
 
@@ -32,7 +32,7 @@ var sqlActions = {
             })
         },
         /*
-        *sqlString：SELECT * FROM `books` WHERE `author` = ?
+        * sqlString：SELECT * FROM `books` WHERE `author` = ?
         * values： ['David']
         * */
         queryBySqlStringAndValues: function (sqlString, values, callback) {

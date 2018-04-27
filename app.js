@@ -20,9 +20,10 @@ app.use(cookieParser());
 //加载前端项目程序到服务器
 app.use('/', express.static(path.join(__dirname, 'client')));
 //请求配置
-app.get('/login', LoginService.login);
+app.post('/login', LoginService.login);
 app.get('/register', LoginService.register);
 app.get('/findPassword', LoginService.findPassword);
+app.post('/getVailCode', LoginService.getVailCode);
 
 
 console.log(new Date().getTime())
