@@ -7,11 +7,11 @@ var sms = new SMS({
 
 var SmsService = {
 
-    sendSmsRegister: function (phoneNumber,callback) {
+    sendSmsRegister: function (phoneNumber,code,callback) {
         sms.send({
             Format: 'JSON',
             Action: 'SendSms',
-            TemplateParam: '{"code":"6666"}',
+            TemplateParam: '{"code":'+code+'}',
             PhoneNumbers: phoneNumber,
             SignName: '毕业设计进度管理系统',
             TemplateCode: 'SMS_133266203'

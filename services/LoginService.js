@@ -27,16 +27,11 @@ var sqlObj = {
     `,
     //该手机是否存在记录
     isValiCodeStr: `SELECT * FROM t_vali_code WHERE vali_code_phone =?`,
-
+    updateCode: `UPDATE t_vali_code SET vali_code = ? ,vali_time =? WHERE vali_code_phone = ?`,
+    insertCode: `INSERT INTO t_vali_code SET ?`
 };
 
-// SmsService.sendSmsRegister('18428369049',function(smsResult){
-//     if(smsResult.Code == 'OK'){
-//         res.send('短信发送成功！！！')
-//     }else{
-//         res.send('短信发送成功！！！')
-//     }
-// });
+
 var LoginService = {
     /*
     *通过 user_account(学号/工号) or user_phone(手机号) and user_password(密码) 登陆
@@ -52,7 +47,8 @@ var LoginService = {
                 if (err) {
                     res.send({
                         success: false,
-                        error: err
+                        error: err,
+                        message: err
                     })
                 } else {
                     res.send({
@@ -78,26 +74,76 @@ var LoginService = {
     *1）验证表中改该手机号是否存在记录，无->新增   有->更新
     *2）发送短信成功后 更新码值
     */
-   getVailCode:function (req, res, next) {
+    getVailCode: function (req, res, next) {
+        console.log(req.body.userPhone);
         sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.isValiCodeStr, [
             req.body.userPhone
         ], function (err, results, fields) {
             if (err) {
-                res.send({ 
-                     success: false,
-                     userInfo: err 
+                //查询失败
+                res.send({
+                    success: false,
+                    message: err
                 })
-            } else{
-                console.log(results[0]);
-                console.log(LoginService.getRandomCode());
-                res.send('成功')
+            } else {
+                //查询成功
+                var code = LoginService.getRandomCode(4);//四位随机数
+                SmsService.sendSmsRegister(req.body.userPhone, code, function (smsResult) {
+                    if (JSON.parse(smsResult).Code == 'OK') {
+                        console.log( results )
+                        if (results[0] !== null) {
+                            //该手机号存在验证码记录
+                            sqlActions.updateActions.update(sqlObj.updateCode, [
+                                code,
+                                new Date().getTime(),
+                                req.body.userPhone
+                            ], function (err, results, fields) {
+                                if (err) {
+                                    res.send({
+                                        success: false,
+                                        message: '存在验证码记录,更新失败'
+                                    })
+                                } else {
+                                    res.send({
+                                        success: true,
+                                        message: '验证码发送成功，更新成功'
+                                    })
+                                }
+                            })
+                        } else {
+                            //该手机号无验证码记录
+                            sqlActions.insertActions.insert(sqlObj.insertCode, {
+                                vali_code: cdode,
+                                vali_time: new Date().getTime(),
+                                vali_code_phone: req.body.userPhone
+                            }, function (err, results, fields) {
+                                if(err){
+                                    res.send({
+                                        success: false,
+                                        message: '该手机号无验证码记录，新增失败'
+                                    })
+                                }else{
+                                    res.send({
+                                        success: true,
+                                        message: '验证码发送成功,验证码新增成'
+                                    })
+                                }
+                            })
+                        }
+                    } else {
+                        res.send({
+                            success: false,
+                            message: smsResult
+                        })
+                    }
+                });
             }
         })
     },
-    getRandomCode:function(n){
-        var randomCode="";
-        for(var i=0;i<n;i++)
-        randomCode+=Math.floor(Math.random()*10);
+    getRandomCode: function (n) {
+        var randomCode = "";
+        for (var i = 0; i < n; i++)
+            randomCode += Math.floor(Math.random() * 10);
         return randomCode;
     }
 
