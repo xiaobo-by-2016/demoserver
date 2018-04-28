@@ -21,9 +21,9 @@ app.use(cookieParser());
 app.use('/', express.static(path.join(__dirname, 'client')));
 //请求配置
 app.post('/login', LoginService.login);
-app.get('/register', LoginService.register);
-app.get('/findPassword', LoginService.findPassword);
-app.post('/getVailCode', LoginService.sendSmsCode);
+app.post('/register', LoginService.register);
+app.post('/findPassword', LoginService.findPassword);
+app.post('/sendSmsCode', LoginService.sendSmsCode);
 
 
 console.log(new Date().getTime())

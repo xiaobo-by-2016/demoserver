@@ -25,10 +25,17 @@ var sqlObj = {
         `
     
     `,
+    //验证账号/手机首是否已经注册
+    isRegisterStr:`SELECT * FROM t_user WHERE user_account=? OR user_phone=?`,
+    //验证码是否正确
+    isCodeValStr:`SELECT * FROM t_vali_code WHERE vali_code_phone=? AND vali_code=?`,
     //该手机是否存在记录
     isValiCodeStr: `SELECT * FROM t_vali_code WHERE vali_code_phone =?`,
+    //更新验证码
     updateCode: `UPDATE t_vali_code SET vali_code = ? ,vali_time =? WHERE vali_code_phone = ?`,
-    insertCode: `INSERT INTO t_vali_code SET ?`
+    //新增验证码
+    insertCode: `INSERT INTO t_vali_code SET ?`,
+
 };
 
 
@@ -48,7 +55,6 @@ var LoginService = {
                 if (err) {
                     res.send({
                         success: false,
-                        error: err,
                         message: err
                     })
                 } else {
@@ -70,8 +76,60 @@ var LoginService = {
             })
     },
     register: function (req, res, next) {
+        
+       sqlActions.queryActions.queryBySqlStringAndValues(
+           sqlObj.isRegisterStr,
+           [
+               req.body.userAccount,
+               req.body.userPhone,
+           ],function(err, results, fields){
+                if(err){
+                    res.send({
+                        success: false,
+                        message: err
+                    })
+                }else{
+                    if(results.length == 1){
+                        //账号已经存在
+                        res.send({
+                            success: true,
+                            status: '1',
+                            message: '账号已经存在'
+                        })
+                    }else{
+                        //验证验证码的有效性
+                        sqlActions.queryActions.queryBySqlStringAndValues(
+                            sqlObj.isCodeValStr,[
+                                req.body.userPhone,
+                                req.body.code
+                            ],function(err, results, fields){
+                                if(err){
+                                    res.send({
+                                        success: false,
+                                        message: err
+                                    })
+                                }else{
 
-        res.send('register');
+                                    if(results.length == 1){
+                                        //验证验证是否过期
+                                         var codeTime = new Date().getTime();
+                                         
+                                         res.send(JSON.stringify(
+                                             (parseInt(codeTime)-parseInt(results[0].vali_time))/(1000*60)
+                                            ))
+                                    }else{
+                                        res.send({
+                                            success: false,
+                                            message: '请确认手机号和验证码是否输入正确'
+                                        })
+                                    }
+                                }
+                            })
+                    }
+                }
+           })
+
+
 
     },
     findPassword: function (req, res, next) {

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-04-28 00:14:53
+Date: 2018-04-28 18:54:32
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -69,7 +69,6 @@ CREATE TABLE `t_user` (
 -- Records of t_user
 -- ----------------------------
 INSERT INTO `t_user` VALUES ('1', '201305020443', '肖波', '12345678', '18428369049', '1001', '2');
-INSERT INTO `t_user` VALUES ('2', '201305020445', '邱凯', '12345678', '18428369045', '1001', '2');
 
 -- ----------------------------
 -- Table structure for `t_vali_code`
@@ -81,10 +80,10 @@ CREATE TABLE `t_vali_code` (
   `vali_code` int(4) NOT NULL COMMENT '验证码',
   `vali_time` varchar(50) NOT NULL,
   PRIMARY KEY (`id`,`vali_code_phone`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of t_vali_code
 -- ----------------------------
-INSERT INTO `t_vali_code` VALUES ('1', '18428369049', '4493', '1524843517189');
-INSERT INTO `t_vali_code` VALUES ('2', '18584808258', '2136', '1524845652075');
+INSERT INTO `t_vali_code` VALUES ('1', '18428369049', '4465', '1524899758414');
+INSERT INTO `t_vali_code` VALUES ('3', '18584808258', '4040', '1524907185321');
