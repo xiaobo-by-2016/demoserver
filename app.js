@@ -7,7 +7,7 @@ var logger = require('morgan');
 
 /**********请求路径变量**********/
 var LoginService = require('./services/LoginService')
-
+var UserService = require('./services/UserService')
 
 var app = express();
 app.use(logger('dev'));
@@ -24,6 +24,8 @@ app.post('/login', LoginService.login);
 app.post('/register', LoginService.register);
 app.post('/findPassword', LoginService.findPassword);
 app.post('/sendSmsCode', LoginService.sendSmsCode);
+app.post('/updatePassword',UserService.updatePassword);
+app.post('/updateUserInfo',UserService.updateUserInfo);
 
 
 console.log(new Date().getTime())
