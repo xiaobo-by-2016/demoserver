@@ -8,6 +8,9 @@ var logger = require('morgan');
 /**********请求路径变量**********/
 var LoginService = require('./services/LoginService')
 var UserService = require('./services/UserService')
+var TopicService = require('./services/TopicService')
+
+
 
 var app = express();
 app.use(logger('dev'));
@@ -26,8 +29,12 @@ app.post('/findPassword', LoginService.findPassword);
 app.post('/sendSmsCode', LoginService.sendSmsCode);
 app.post('/updatePassword',UserService.updatePassword);
 app.post('/updateUserInfo',UserService.updateUserInfo);
-
-
+app.post('/addTopic',TopicService.addTopic);
+app.post('/getTopicsByTecAcc',TopicService.getTopicsByTecAcc);
+app.post('/getTopicsByKey',TopicService.getTopicsByKey);
+app.post('/selectTopic',TopicService.selectTopic);
+app.post('/getTopicsByCollegeId',TopicService.getTopicsByCollegeId);
+app.post('/getTopicsByStuKey',TopicService.getTopicsByStuKey);
 console.log(new Date().getTime())
 
 
