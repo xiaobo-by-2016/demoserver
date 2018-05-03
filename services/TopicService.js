@@ -191,7 +191,7 @@ var TopicService = {
             }
         })
     },
-    //学生题目模糊查询
+    //学生题目模糊查询列表
     getTopicsByStuKey: function (req, res, next) {
         var sqlStr = sqlObj.getTopicsByStuKeyStr +
             `"%${req.body.strkey}%" OR t.topic_content LIKE "%${req.body.strkey}%") 
@@ -208,12 +208,11 @@ var TopicService = {
                 } else {
                     res.send({
                         success: true,
-                        message: '模糊查询成功',
+                        message: '学生模糊查询成功',
                         topicList: results
                     })
                 }
             })
-    },
-
+    }
 }
 module.exports = TopicService;
