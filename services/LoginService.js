@@ -42,10 +42,11 @@ var LoginService = {
     *返回用户基本信息userInfo
     */
     login: function (req, res, next) {
+        console.log(req.body)
         sqlActions.queryActions.queryBySqlStringAndValues(
             sqlObj.loginStr,
             [req.body.userAccount,
-            req.body.userPhone,
+            req.body.userAccount,
             req.body.userPassword
             ], function (err, results, fields) {
 

@@ -12,12 +12,27 @@ var TopicService = require('./services/TopicService')
 
 
 
+
+
+
+
 var app = express();
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+
+
+/**********解决跨域请求（发布时屏蔽）**********/
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.header('Access-Control-Allow-Credentials','true');
+    next();
+};
+app.use(allowCrossDomain);
 
 /**********请求路径变配置**********/
 //加载前端项目程序到服务器
