@@ -4,19 +4,18 @@ var sqlObj = {
     //登陆后返回用户信息
     loginStr:
         `SELECT u.user_id       userId,
-	    u.user_account      userAccount,
-	    u.user_phone        userPhone,
-	    u.user_name         userName,
-	    c.college_id        collegeId,
-	    c.college_name      collegeName,
-	    r.role_id           roleId,
-	    r.role_name         roleName
-    FROM        t_user          u,
-                t_role          r, 
-                t_college_info  c
-    WHERE   u.user_role_id = r.role_id 
-    AND     u.user_college_id = c.college_id
-    AND     (u.user_account=? OR u.user_phone=?) 
+        u.user_account      userAccount,
+        u.user_phone        userPhone,
+        u.user_name         userName,
+        c.college_id        collegeId,
+        c.college_name      collegeName,
+        r.role_id           roleId,
+        r.role_name         roleName
+    FROM        t_user          u
+                
+    LEFT JOIN   t_role r ON  u.user_role_id = r.role_id 
+    LEFT JOIN   t_college_info  c ON     u.user_college_id = c.college_id
+    WHERE     (u.user_account=? OR u.user_phone=?) 
     AND     u.user_password=?`,
     //新用户注册
     registerStr: `INSERT INTO t_user SET ?`,

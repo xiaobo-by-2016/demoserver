@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-04-28 18:54:32
+Date: 2018-05-08 02:37:48
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -51,6 +51,24 @@ INSERT INTO `t_role` VALUES ('1', '教师');
 INSERT INTO `t_role` VALUES ('2', '学生');
 
 -- ----------------------------
+-- Table structure for `t_topic`
+-- ----------------------------
+DROP TABLE IF EXISTS `t_topic`;
+CREATE TABLE `t_topic` (
+  `topic_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '题目id',
+  `topic_title` text NOT NULL,
+  `topic_content` text NOT NULL,
+  `student_account` bigint(15) DEFAULT NULL,
+  `teacher_account` bigint(15) NOT NULL,
+  `topic_college_id` int(10) NOT NULL,
+  PRIMARY KEY (`topic_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of t_topic
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for `t_user`
 -- ----------------------------
 DROP TABLE IF EXISTS `t_user`;
@@ -62,13 +80,16 @@ CREATE TABLE `t_user` (
   `user_phone` bigint(11) NOT NULL COMMENT '手机号',
   `user_college_id` int(6) DEFAULT NULL COMMENT '高校id',
   `user_role_id` tinyint(1) DEFAULT NULL COMMENT '用户角色',
+  `sex` int(1) DEFAULT NULL COMMENT '性别 1男  2女',
+  `email` varchar(30) DEFAULT NULL COMMENT '邮箱',
   PRIMARY KEY (`user_id`,`user_account`,`user_phone`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of t_user
 -- ----------------------------
-INSERT INTO `t_user` VALUES ('1', '201305020443', '肖波', '12345678', '18428369049', '1001', '2');
+INSERT INTO `t_user` VALUES ('9', '201305020443', null, 'qwe123', '18428369049', null, '2', null, null);
+INSERT INTO `t_user` VALUES ('10', '201305020442', null, '123456', '18584808258', null, '1', null, null);
 
 -- ----------------------------
 -- Table structure for `t_vali_code`
@@ -80,10 +101,10 @@ CREATE TABLE `t_vali_code` (
   `vali_code` int(4) NOT NULL COMMENT '验证码',
   `vali_time` varchar(50) NOT NULL,
   PRIMARY KEY (`id`,`vali_code_phone`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of t_vali_code
 -- ----------------------------
-INSERT INTO `t_vali_code` VALUES ('1', '18428369049', '4465', '1524899758414');
-INSERT INTO `t_vali_code` VALUES ('3', '18584808258', '4040', '1524907185321');
+INSERT INTO `t_vali_code` VALUES ('4', '18428369049', '1762', '1525716122954');
+INSERT INTO `t_vali_code` VALUES ('5', '18584808258', '2681', '1525718001211');
