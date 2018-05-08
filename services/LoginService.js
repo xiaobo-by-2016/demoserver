@@ -63,9 +63,9 @@ var LoginService = {
                         })
                     } else {
                         res.send({
-                            success: true,
+                            success: false,
                             userInfo: results,
-                            message: '账号信息不正确',
+                            message: '账号或者密码不正确',
                         })
                     }
 
