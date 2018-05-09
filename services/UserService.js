@@ -15,21 +15,22 @@ var sqlObj = {
     `,
     getUserInfoStr:
         `SELECT u.user_id       userId,
-	    u.user_account      userAccount,
-	    u.user_phone        userPhone,
-	    u.user_name         userName,
-	    c.college_id        collegeId,
-	    c.college_name      collegeName,
-	    r.role_id           roleId,
-        r.role_name         roleName,
+        u.user_account      userAccount,
+        u.user_phone        userPhone,
+        u.user_name         userName,
         u.sex               sex,
-        u.email             email
-    FROM        t_user          u,
-                t_role          r, 
-                t_college_info  c
-    WHERE   u.user_role_id = r.role_id 
-    AND     u.user_college_id = c.college_id
-    AND     (u.user_account=? OR u.user_phone=?) `,
+        u.email             email,
+        c.college_id        collegeId,
+        c.college_name      collegeName,
+        r.role_id           roleId,
+        r.role_name         roleName,
+        t.progress_id       progressId    
+    FROM        t_user          u
+                
+    LEFT JOIN   t_role r ON  u.user_role_id = r.role_id 
+    LEFT JOIN   t_college_info  c ON     u.user_college_id = c.college_id
+    LEFT JOIN   t_progress  t ON     t.progress_account = u.user_account
+    WHERE     (u.user_account=? OR u.user_phone=?) `,
 
     getSchoolListStr: `
         SELECT 
