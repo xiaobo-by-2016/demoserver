@@ -50,7 +50,10 @@ app.post('/getTopicsByKey',TopicService.getTopicsByKey);
 app.post('/selectTopic',TopicService.selectTopic);
 app.post('/getTopicsByCollegeId',TopicService.getTopicsByCollegeId);
 app.post('/getTopicsByStuKey',TopicService.getTopicsByStuKey);
-console.log(new Date().getTime())
+app.post('/getSchoolList',UserService.getSchoolList);
+
+
+console.log(new Date().getMinutes())
 
 
 

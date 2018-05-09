@@ -7,6 +7,7 @@ var sqlObj = {
         u.user_account      userAccount,
         u.user_phone        userPhone,
         u.user_name         userName,
+        u.sex               sex,
         c.college_id        collegeId,
         c.college_name      collegeName,
         r.role_id           roleId,

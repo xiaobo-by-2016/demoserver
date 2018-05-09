@@ -1,6 +1,6 @@
 var SmsService = require('./SmsService');
 var sqlActions = require('../data-base-action/sqlActions');
-var CommonService = require('./CommonService')
+var CommonService = require('./CommonService');
 var sqlObj = {
     addTopicStr: 'INSERT INTO t_topic SET ?',
     getTopicsByTecAccStr: `

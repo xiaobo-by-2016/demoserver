@@ -1,5 +1,5 @@
 var sqlActions = require('../data-base-action/sqlActions');
-
+var CommonService = require('./CommonService');
 var sqlObj = {
     updatePasswordStr: 'UPDATE t_user SET user_password = ?  WHERE user_phone = ?',
     //旧密码是否正确
@@ -30,6 +30,13 @@ var sqlObj = {
     WHERE   u.user_role_id = r.role_id 
     AND     u.user_college_id = c.college_id
     AND     (u.user_account=? OR u.user_phone=?) `,
+
+    getSchoolListStr: `
+        SELECT 
+        t.college_id collegeId,
+        t.college_name collegeName
+         FROM t_college_info t
+    `
 }
 
 var UserService = {
@@ -129,7 +136,7 @@ var UserService = {
                                 res.send({
                                     success: false,
                                     message: '账号信息不正确',
-                                    error:fields
+                                    error: fields
                                 })
                             }
 
@@ -137,6 +144,27 @@ var UserService = {
                     })
             }
         })
+    },
+    getSchoolList: function (req, res, next) {
+        CommonService.checkUser(req, res, next, 0, function () {
+            sqlActions.queryActions.queryBySqlString(sqlObj.getSchoolListStr, function (err, results, fields) {
+                if (err) {
+                    res.send({
+                        success: false,
+                        message: err
+                    })
+                } else {
+                    res.send({
+                        success: true,
+                        message: '高校列表获取成功~',
+                        schoolList: results
+                    })
+                }
+            })
+
+
+        })
     }
+
 }
 module.exports = UserService;

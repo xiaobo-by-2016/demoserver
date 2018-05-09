@@ -15,14 +15,19 @@ var CommonService = {
                 })
             } else {
                 if (results.length == 1) {
-                    if (results[0].user_role_id == role) {
-                        callback();
+                    if (role != 0) {
+                        if (results[0].user_role_id == role) {
+                            callback();
+                        } else {
+                            res.send({
+                                success: false,
+                                message: '用户无此权限'
+                            })
+                        }
                     } else {
-                        res.send({
-                            success: false,
-                            message: '用户无此权限'
-                        })
+                        callback();
                     }
+
                 } else {
                     res.send({
                         success: false,
