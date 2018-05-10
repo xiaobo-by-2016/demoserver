@@ -1,3 +1,5 @@
+
+
 var SmsService = require('./SmsService');
 var sqlActions = require('../data-base-action/sqlActions');
 var CommonService = require('./CommonService');
@@ -20,9 +22,10 @@ var sqlObj = {
     SELECT 
 	t.topic_id topicId,
 	t.topic_title topicTitle,
-	t.topic_content topicContent,
+    t.topic_content topicContent,
+    t.student_account studentAccount,
     u.user_name userName,
-	u.user_phone studentPhone,
+	u.user_phone studentPhone
     FROM t_topic t 
     LEFT JOIN t_user u ON  t.student_account = u.user_account
     where (t.topic_title LIKE `,
@@ -34,35 +37,105 @@ var sqlObj = {
 	t.topic_title topicTitle,
 	t.topic_content topicContent,
     u.user_name teacherName,
-	u.user_phone teacherPhone
+    u.user_phone teacherPhone,
+    s.user_name studentName
     FROM t_topic t 
     LEFT JOIN t_user u ON  t.teacher_account = u.user_account
+    LEFT JOIN t_user s ON  t.student_account = s.user_account
     where t.topic_college_id = ?`,
     //通过学号获取毕设题目（选）
-    getTopicsByStuAccStr:`
+    getTopicsByStuAccStr: `
     SELECT 
 	t.topic_id topicId,
 	t.topic_title topicTitle,
 	t.topic_content topicContent,
     u.user_name teacherName,
-	u.user_phone teacherPhone
+    u.user_phone teacherPhone,
+    s.user_name studentName
     FROM t_topic t 
     LEFT JOIN t_user u ON  t.teacher_account = u.user_account
+    LEFT JOIN t_user s ON  t.student_account = s.user_account
     where t.student_account = ?`,
-     //学生题目模糊查询
-     getTopicsByStuKeyStr: `
+    //学生题目模糊查询
+    getTopicsByStuKeyStr: `
      SELECT 
      t.topic_id topicId,
      t.topic_title topicTitle,
      t.topic_content topicContent,
      u.user_name userName,
-     u.user_phone studentPhone
+     u.user_phone studentPhone,
+     s.user_name studentName
      FROM t_topic t 
      LEFT JOIN t_user u ON  t.student_account = u.user_account
+     LEFT JOIN t_user s ON  t.student_account = s.user_account
      where (t.topic_title LIKE `,
+    //删除毕设题目
+    deleteTopicStr: `
+     DELETE FROM t_topic WHERE topic_id = 
+     `
 }
 
 var TopicService = {
+    //学生获取本人已选取的毕设题目
+    getCheckedTopic: function (req, res, next) {
+        sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.getTopicsByStuAccStr, [
+            req.body.studentAccount
+        ], function (err, results, fields) {
+            if (err) {
+                res.send({
+                    success: false,
+                    message: err
+                })
+            } else {
+               if(results.length == 0){
+                res.send({
+                    success: true,
+                    isChecked:false,
+                    message: '选取毕设题目后,通过学号获取毕设题目列表成功',
+                    topicList: results
+                })
+               }else{
+                res.send({
+                    success: true,
+                    isChecked:true,
+                    message: '选取毕设题目后,通过学号获取毕设题目列表成功',
+                    topicList: results
+                })
+               }
+            }
+        })
+    },
+    deleteTopic: function (req, res, next) {
+        req.body.userAccount = req.body.teacherAccount;
+        CommonService.checkUser(req, res, next, 1, function () {
+            sqlActions.deleteActions.delete((sqlObj.deleteTopicStr + req.body.topicId),
+                function (err, results, fields) {
+                    if (err) {
+                        res.send({
+                            success: false,
+                            message: JSON.stringify(err)
+                        })
+                    } else {
+                        sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.getTopicsByTecAccStr, [
+                            req.body.teacherAccount
+                        ], function (err, results, fields) {
+                            if (err) {
+                                res.send({
+                                    success: false,
+                                    message: JSON.stringify(err)
+                                })
+                            } else {
+                                res.send({
+                                    success: true,
+                                    message: '删除成功',
+                                    topicList: results
+                                })
+                            }
+                        })
+                    }
+                })
+        })
+    },
     //新增毕设题目（教师）
     addTopic: function (req, res, next) {
         req.body.userAccount = req.body.teacherAccount;
@@ -120,6 +193,7 @@ var TopicService = {
     },
     //教师本人毕设题目模糊查询
     getTopicsByKey: function (req, res, next) {
+        console.log(req.body)
         var sqlStr = sqlObj.getTopicsByKeyStr +
             `"%${req.body.strkey}%" OR t.topic_content LIKE "%${req.body.strkey}%") 
          AND 
@@ -130,7 +204,7 @@ var TopicService = {
                 if (err) {
                     res.send({
                         success: false,
-                        message: err
+                        message: JSON.stringify(err)
                     })
                 } else {
                     res.send({
@@ -145,8 +219,8 @@ var TopicService = {
     selectTopic: function (req, res, next) {
         req.body.userAccount = req.body.studentAccount;
         CommonService.checkUser(req, res, next, 2, function () {
-            sqlActions.updateActions.update(sqlObj.updateTopicStr, [
-                req.body.studentAccount,req.body.topicId
+            sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.getTopicsByStuAccStr, [
+                req.body.studentAccount
             ], function (err, results, fields) {
                 if (err) {
                     res.send({
@@ -154,8 +228,63 @@ var TopicService = {
                         message: err
                     })
                 } else {
-                    sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.getTopicsByStuAccStr, [
-                        req.body.studentAccount
+                    if (results.length == 0) {
+                        sqlActions.updateActions.update(sqlObj.updateTopicStr, [
+                            req.body.studentAccount, req.body.topicId
+                        ], function (err, results, fields) {
+                            if (err) {
+                                res.send({
+                                    success: false,
+                                    message: err
+                                })
+                            } else {
+                                //选取成功后返回topic列表
+                                sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.getTopicsByCollegeIdStr, [
+                                    req.body.collegeId
+                                ], function (err, results, fields) {
+                                    if (err) {
+                                        res.send({
+                                            success: false,
+                                            message: err
+                                        })
+                                    } else {
+                                        res.send({
+                                            success: true,
+                                            message: '查询成功',
+                                            isChecked:true,
+                                            topicList: results
+                                        })
+                                    }
+                                })
+                            }
+                        })
+                    } else {
+                        res.send({
+                            success: false,
+                            message: '您已选取,不能再次选取!</br>若要重新选取,请联系该毕设的指导老师~'
+                        })
+                    }
+                }
+            })
+
+
+
+        })
+    },
+    //通过高校Id获取所有的毕业题目
+    getTopicsByCollegeId: function (req, res, next) {
+        sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.getTopicsByStuAccStr, [
+            req.body.studentAccount
+        ], function (err, results, fields) {
+            if (err) {
+                res.send({
+                    success: false,
+                    message: err
+                })
+            } else {
+                if(results.length == 0){
+                    sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.getTopicsByCollegeIdStr, [
+                        req.body.collegeId
                     ], function (err, results, fields) {
                         if (err) {
                             res.send({
@@ -165,19 +294,48 @@ var TopicService = {
                         } else {
                             res.send({
                                 success: true,
-                                message: '选取毕设题目后,通过学号获取毕设题目列表成功',
+                                isChecked:false,
+                                message: '查询成功',
+                                topicList: results
+                            })
+                        }
+                    })
+                }else{
+                    sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.getTopicsByCollegeIdStr, [
+                        req.body.collegeId
+                    ], function (err, results, fields) {
+                        if (err) {
+                            res.send({
+                                success: false,
+                                message: err
+                            })
+                        } else {
+                            res.send({
+                                success: true,
+                                isChecked:true,
+                                message: '查询成功',
                                 topicList: results
                             })
                         }
                     })
                 }
-            })
+                
+            }
         })
+
+
+        
     },
-    //通过高校Id获取所有的毕业题目
-    getTopicsByCollegeId:function(req, res, next){
-        sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.getTopicsByCollegeIdStr, [
-            req.body.collegeId
+    //学生题目模糊查询列表
+    getTopicsByStuKey: function (req, res, next) {
+
+        var sqlStr = sqlObj.getTopicsByStuKeyStr +
+            `"%${req.body.strkey}%" OR t.topic_content LIKE "%${req.body.strkey}%") 
+         AND 
+         topic_college_id = ${req.body.collegeId} `;
+
+         sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.getTopicsByStuAccStr, [
+            req.body.studentAccount
         ], function (err, results, fields) {
             if (err) {
                 res.send({
@@ -185,36 +343,45 @@ var TopicService = {
                     message: err
                 })
             } else {
-                res.send({
-                    success: true,
-                    message: '查询成功',
-                    topicList: results
-                })
+                if(results.length == 0){
+                    sqlActions.queryActions.queryBySqlString(sqlStr,
+                        function (err, results, fields) {
+                            if (err) {
+                                res.send({
+                                    success: false,
+                                    message: err
+                                })
+                            } else {
+                                res.send({
+                                    success: true,
+                                    isChecked:false,
+                                    message: '学生模糊查询成功',
+                                    topicList: results
+                                })
+                            }
+                        })
+                }else{
+                    sqlActions.queryActions.queryBySqlString(sqlStr,
+                        function (err, results, fields) {
+                            if (err) {
+                                res.send({
+                                    success: false,
+                                    message: err
+                                })
+                            } else {
+                                res.send({
+                                    success: true,
+                                    isChecked:true,
+                                    message: '学生模糊查询成功',
+                                    topicList: results
+                                })
+                            }
+                        })
+                }
             }
         })
-    },
-    //学生题目模糊查询列表
-    getTopicsByStuKey: function (req, res, next) {
-        var sqlStr = sqlObj.getTopicsByStuKeyStr +
-            `"%${req.body.strkey}%" OR t.topic_content LIKE "%${req.body.strkey}%") 
-         AND 
-         topic_college_id = ${req.body.collegeId} `;
 
-        sqlActions.queryActions.queryBySqlString(sqlStr,
-            function (err, results, fields) {
-                if (err) {
-                    res.send({
-                        success: false,
-                        message: err
-                    })
-                } else {
-                    res.send({
-                        success: true,
-                        message: '学生模糊查询成功',
-                        topicList: results
-                    })
-                }
-            })
+        
     }
 }
 module.exports = TopicService;

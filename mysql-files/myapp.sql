@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : 毕设
+Source Server         : 毕业设计
 Source Server Version : 50717
 Source Host           : localhost:3306
 Source Database       : myapp
@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-05-10 18:02:51
+Date: 2018-05-11 01:44:29
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -79,16 +79,13 @@ CREATE TABLE `t_topic` (
   `teacher_account` bigint(15) NOT NULL,
   `topic_college_id` int(10) NOT NULL,
   PRIMARY KEY (`topic_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of t_topic
 -- ----------------------------
-INSERT INTO `t_topic` VALUES ('10', '毕业题目1', 'XXX', null, '201305020442', '1001');
-INSERT INTO `t_topic` VALUES ('11', '毕设题目2', 'XXX', null, '201305020442', '1001');
-INSERT INTO `t_topic` VALUES ('12', '毕设题目3', 'XXX', null, '201305020442', '1001');
-INSERT INTO `t_topic` VALUES ('13', '毕设题目4', 'xxx', null, '201305020442', '1001');
-INSERT INTO `t_topic` VALUES ('14', '毕设题目5', 'xxxx', null, '201305020442', '1001');
+INSERT INTO `t_topic` VALUES ('15', '毕业题目1', 'xxxx', '201305020443', '201305020442', '1001');
+INSERT INTO `t_topic` VALUES ('16', '毕设题目2', 'xxxx', null, '201305020442', '1001');
 
 -- ----------------------------
 -- Table structure for `t_user`
@@ -110,7 +107,7 @@ CREATE TABLE `t_user` (
 -- ----------------------------
 -- Records of t_user
 -- ----------------------------
-INSERT INTO `t_user` VALUES ('9', '201305020443', null, '123456', '18428369049', null, '2', null, null);
+INSERT INTO `t_user` VALUES ('9', '201305020443', '学生1', '123456', '18428369049', '1001', '2', '1', '82@qq.com');
 INSERT INTO `t_user` VALUES ('10', '201305020442', '教师2', '1234567', '18584808258', '1001', '1', '1', '82@qq.com');
 
 -- ----------------------------

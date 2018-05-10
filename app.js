@@ -51,6 +51,9 @@ app.post('/selectTopic',TopicService.selectTopic);
 app.post('/getTopicsByCollegeId',TopicService.getTopicsByCollegeId);
 app.post('/getTopicsByStuKey',TopicService.getTopicsByStuKey);
 app.post('/getSchoolList',UserService.getSchoolList);
+app.post('/deleteTopic',TopicService.deleteTopic);
+app.post('/getCheckedTopic',TopicService.getCheckedTopic);
+
 
 
 console.log(new Date().getMinutes())
