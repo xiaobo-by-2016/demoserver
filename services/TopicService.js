@@ -7,9 +7,11 @@ var sqlObj = {
     SELECT 
 	t.topic_id topicId,
 	t.topic_title topicTitle,
-	t.topic_content topicContent,
-    u.user_name userName,
-	u.user_phone studentPhone
+    t.topic_content topicContent,
+    t.student_account studentAccount,
+    u.user_name  studentName,
+    u.user_phone studentPhone
+    
     FROM t_topic t 
     LEFT JOIN t_user u ON  t.student_account = u.user_account
     where t.teacher_account = ?`,
@@ -20,7 +22,7 @@ var sqlObj = {
 	t.topic_title topicTitle,
 	t.topic_content topicContent,
     u.user_name userName,
-	u.user_phone studentPhone
+	u.user_phone studentPhone,
     FROM t_topic t 
     LEFT JOIN t_user u ON  t.student_account = u.user_account
     where (t.topic_title LIKE `,
@@ -74,7 +76,7 @@ var TopicService = {
                 if (err) {
                     res.send({
                         success: false,
-                        message: err
+                        message: JSON.stringify(err)
                     })
                 } else {
                     sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.getTopicsByTecAccStr, [
@@ -83,7 +85,7 @@ var TopicService = {
                         if (err) {
                             res.send({
                                 success: false,
-                                message: err
+                                message: JSON.stringify(err)
                             })
                         } else {
                             res.send({
@@ -105,7 +107,7 @@ var TopicService = {
             if (err) {
                 res.send({
                     success: false,
-                    message: err
+                    message: JSON.stringify(err)
                 })
             } else {
                 res.send({
