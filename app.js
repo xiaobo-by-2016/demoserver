@@ -56,6 +56,7 @@ app.post('/getCheckedTopic',TopicService.getCheckedTopic);
 app.post('/addProgress',ProgressService.addProgress);
 app.post('/getProList',ProgressService.getProList);
 app.post('/deletePro',ProgressService.deletePro);
+app.post('/getTPByTecAcc',ProgressService.getTPByTecAcc);
 
 
 console.log(new Date().getMinutes())
