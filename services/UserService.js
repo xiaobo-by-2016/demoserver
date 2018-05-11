@@ -24,12 +24,13 @@ var sqlObj = {
         c.college_name      collegeName,
         r.role_id           roleId,
         r.role_name         roleName,
-        t.progress_id       progressId    
+        t.topic_id          topicId,    
+        t.topic_title       topicTitle
     FROM        t_user          u
                 
     LEFT JOIN   t_role r ON  u.user_role_id = r.role_id 
     LEFT JOIN   t_college_info  c ON     u.user_college_id = c.college_id
-    LEFT JOIN   t_progress  t ON     t.progress_account = u.user_account
+    LEFT JOIN   t_topic  t ON     t.student_account = u.user_account
     WHERE     (u.user_account=? OR u.user_phone=?) `,
 
     getSchoolListStr: `

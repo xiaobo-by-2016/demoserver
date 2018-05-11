@@ -5,6 +5,7 @@ var sqlObj = {
 }
 var CommonService = {
     checkUser: function (req, res, next, role, callback) {
+        
         sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.isUserStr, [
             req.body.userAccount, req.body.userPhone
         ], function (err, results, fields) {

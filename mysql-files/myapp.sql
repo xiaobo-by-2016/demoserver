@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : 毕业设计
+Source Server         : 毕设
 Source Server Version : 50717
 Source Host           : localhost:3306
 Source Database       : myapp
@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-05-11 01:44:29
+Date: 2018-05-11 22:09:55
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -39,17 +39,20 @@ INSERT INTO `t_college_info` VALUES ('4', '1004', '西南科技大学');
 -- ----------------------------
 DROP TABLE IF EXISTS `t_progress`;
 CREATE TABLE `t_progress` (
-  `progress_id` int(20) DEFAULT NULL COMMENT '进度id',
-  `progress` varchar(20) DEFAULT NULL COMMENT '进度',
-  `progress_content` varchar(255) DEFAULT NULL COMMENT '进度内容',
-  `progress_time` varchar(50) DEFAULT NULL COMMENT '进度时间',
-  `progress_account` int(20) DEFAULT NULL COMMENT '关联的学生账号',
-  `progress_topic_id` int(20) DEFAULT NULL COMMENT '关联的题目id'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `progress_id` int(20) NOT NULL AUTO_INCREMENT COMMENT '进度id',
+  `progress` bigint(20) NOT NULL COMMENT '进度',
+  `progress_content` varchar(255) NOT NULL COMMENT '进度内容',
+  `progress_time` varchar(50) NOT NULL COMMENT '进度时间',
+  `progress_account` bigint(30) NOT NULL COMMENT '关联的学生账号',
+  `progress_topic_id` int(20) NOT NULL COMMENT '关联的题目id',
+  `sms_count` int(2) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`progress_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of t_progress
 -- ----------------------------
+INSERT INTO `t_progress` VALUES ('3', '10', '登陆,注册，找回密码功能模块完成', '1526042629113', '201305020443', '15', '0');
 
 -- ----------------------------
 -- Table structure for `t_role`

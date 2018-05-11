@@ -9,7 +9,7 @@ var logger = require('morgan');
 var LoginService = require('./services/LoginService')
 var UserService = require('./services/UserService')
 var TopicService = require('./services/TopicService')
-
+var ProgressService = require('./services/ProgressService')
 
 
 
@@ -53,7 +53,9 @@ app.post('/getTopicsByStuKey',TopicService.getTopicsByStuKey);
 app.post('/getSchoolList',UserService.getSchoolList);
 app.post('/deleteTopic',TopicService.deleteTopic);
 app.post('/getCheckedTopic',TopicService.getCheckedTopic);
-
+app.post('/addProgress',ProgressService.addProgress);
+app.post('/getProList',ProgressService.getProList);
+app.post('/deletePro',ProgressService.deletePro);
 
 
 console.log(new Date().getMinutes())
