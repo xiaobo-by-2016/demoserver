@@ -24,7 +24,7 @@ var sqlObj = {
 	t.topic_title topicTitle,
     t.topic_content topicContent,
     t.student_account studentAccount,
-    u.user_name userName,
+    u.user_name studentName,
 	u.user_phone studentPhone
     FROM t_topic t 
     LEFT JOIN t_user u ON  t.student_account = u.user_account
@@ -35,7 +35,8 @@ var sqlObj = {
     SELECT 
 	t.topic_id topicId,
 	t.topic_title topicTitle,
-	t.topic_content topicContent,
+    t.topic_content topicContent,
+    t.student_account studentAccount,
     u.user_name teacherName,
     u.user_phone teacherPhone,
     s.user_name studentName

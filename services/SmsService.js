@@ -25,6 +25,22 @@ var SmsService = {
         }).catch(err => {
             console.log(err)
         })
+    },
+
+    sendSmsTemplate: function (options,callback) {
+        sms.send({
+            Format: 'JSON',
+            Action: 'SendSms',
+            TemplateParam:'{"name":' + options.name +",process:"+options.process+ '}' ,
+            PhoneNumbers: options.phoneNumbers,
+            SignName: '毕业设计进度管理系统',
+            TemplateCode: TemplateCodeArr[options.templateIndex]
+        }).then((result) => {
+            console.log(result)
+            callback(result)
+        }).catch(err => {
+            console.log(err)
+        })
     }
 }
 

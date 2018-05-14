@@ -160,7 +160,7 @@ var ProgressService = {
         sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.getTopicsByTecAccStr, [
             req.body.teacherAccount
         ], function (err, results1, fields) {
-            console.log(results1)
+            
             if (err) {
                 res.send({
                     success: false,
@@ -170,7 +170,7 @@ var ProgressService = {
                 sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.getTecTopicIdStr,[
                     req.body.teacherAccount
                 ],function(err, results2, fields){
-
+                    console.log(results2)
                     if(err){
                         res.send({
                             success: false,
