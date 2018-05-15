@@ -1,7 +1,6 @@
 var SmsService = require('./SmsService');
 var sqlActions = require('../data-base-action/sqlActions');
 var CommonService = require('./CommonService');
-
 var sqlObj = {
     // 进度新增
     addProgressStr: `INSERT INTO t_progress SET ?`,
@@ -35,7 +34,7 @@ var sqlObj = {
     where t.teacher_account = ?
     ORDER BY p.progress_id  DESC
     `,
-    getTecTopicIdStr:`
+    getTecTopicIdStr: `
     SELECT 
     t.topic_id topicId,
     t.topic_title topicTitle,
@@ -46,6 +45,9 @@ var sqlObj = {
     FROM t_topic t 
     LEFT JOIN t_user u ON  t.student_account = u.user_account
     WHERE t.teacher_account = ?
+    `,
+    gettopicSms: `
+    SELECT t.topic_sms_time topicSmsTime FROM t_topic t WHERE t.topic_id = ?
     `
 
 }
@@ -151,7 +153,7 @@ var ProgressService = {
             })
         })
     },
-    
+
     /**
      * teacherAccount
      */
@@ -160,46 +162,76 @@ var ProgressService = {
         sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.getTopicsByTecAccStr, [
             req.body.teacherAccount
         ], function (err, results1, fields) {
-            
+
             if (err) {
                 res.send({
                     success: false,
                     message: JSON.stringify(err)
                 })
             } else {
-                sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.getTecTopicIdStr,[
+                sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.getTecTopicIdStr, [
                     req.body.teacherAccount
-                ],function(err, results2, fields){
+                ], function (err, results2, fields) {
                     console.log(results2)
-                    if(err){
+                    if (err) {
                         res.send({
                             success: false,
                             message: JSON.stringify(err)
                         })
-                    }else{
-                        let proArr =[];
-                        for(var index2 in results2 ){
-                            for(var index1 in results1){
-                                if(results1[index1].topicId == results2[index2].topicId){
-                                    if(results1[index1].studentAccount !=null){
+                    } else {
+                        let proArr = [];
+                        for (var index2 in results2) {
+                            for (var index1 in results1) {
+                                if (results1[index1].topicId == results2[index2].topicId) {
+                                    if (results1[index1].studentAccount != null) {
                                         proArr.push(results1[index1])
                                     }
-                                  
+
                                 }
                             }
                             results2[index2].proList = proArr;
                             proArr = [];
                         }
                         res.send({
-                            topicList:results2,
-                            success:true,
-                            message:'查询成功'
+                            topicList: results2,
+                            success: true,
+                            message: '查询成功'
                         })
                     }
                 })
-               
+
             }
         })
     },
+    //短信通知
+    sendNotify: function (req, res, next) {
+        sqlActions.queryActions.queryBySqlStringAndValues(sqlObj.gettopicSms,[
+            req.body.topicId
+        ],function(err, results, fields){
+            if(err){
+                res.send({
+                    success:false,
+                    message:JSON.stringify(err)
+                })
+            }else{
+                SmsService.sendNotify({
+                    name:req.body.studentName,
+                    progress:req.body.progress
+                },function(){
+                    if (JSON.parse(smsResult).Code == 'OK') {
+                        res.send({
+                            success:true,
+                            message:'发送短信通知成功~'
+                        })
+                    }else{
+                        res.send({
+                            success:false,
+                            message:JSON.stringify(smsResult)
+                        })
+                    }
+                })
+            }
+        })
+    }
 }
 module.exports = ProgressService;
