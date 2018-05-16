@@ -57,7 +57,7 @@ app.post('/addProgress',ProgressService.addProgress);
 app.post('/getProList',ProgressService.getProList);
 app.post('/deletePro',ProgressService.deletePro);
 app.post('/getTPByTecAcc',ProgressService.getTPByTecAcc);
-
+app.post('/sendNotify',ProgressService.sendNotify);
 
 console.log(new Date().getMinutes())
 

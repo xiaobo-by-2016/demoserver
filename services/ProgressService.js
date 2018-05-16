@@ -27,7 +27,7 @@ var sqlObj = {
     p.progress_content proContent,
     p.progress_time proTime,
     t.student_account studentAccount,
-    p.sms_count smsCount
+    t.topic_sms_time topicSmsTime
     FROM t_topic t 
     LEFT JOIN t_user u ON  t.student_account = u.user_account
     LEFT JOIN t_progress p on p.progress_topic_id = t.topic_id
@@ -214,10 +214,12 @@ var ProgressService = {
                     message:JSON.stringify(err)
                 })
             }else{
-                SmsService.sendNotify({
+                SmsService.sendSmsTemplate({
                     name:req.body.studentName,
-                    progress:req.body.progress
-                },function(){
+                    progress:req.body.progress,
+                    templateIndex:0,
+                    phoneNumbers:req.body.studentPhone
+                },function(smsResult){
                     if (JSON.parse(smsResult).Code == 'OK') {
                         res.send({
                             success:true,

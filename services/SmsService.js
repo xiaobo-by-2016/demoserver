@@ -26,12 +26,16 @@ var SmsService = {
             console.log(err)
         })
     },
-
+    //'{"name":' + options.name +","+"progress:"+options.process+ '}'
     sendSmsTemplate: function (options,callback) {
+        console.log(options)
         sms.send({
             Format: 'JSON',
             Action: 'SendSms',
-            TemplateParam:'{"name":' + options.name +",process:"+options.process+ '}' ,
+            TemplateParam: JSON.stringify({
+                name:options.name,
+                process:options.progress
+            }),
             PhoneNumbers: options.phoneNumbers,
             SignName: '毕业设计进度管理系统',
             TemplateCode: TemplateCodeArr[options.templateIndex]
