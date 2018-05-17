@@ -10,6 +10,7 @@ var LoginService = require('./services/LoginService')
 var UserService = require('./services/UserService')
 var TopicService = require('./services/TopicService')
 var ProgressService = require('./services/ProgressService')
+var AnnService = require('./services/AnnService')
 
 
 
@@ -59,7 +60,12 @@ app.post('/deletePro',ProgressService.deletePro);
 app.post('/getTPByTecAcc',ProgressService.getTPByTecAcc);
 app.post('/sendNotify',ProgressService.sendNotify);
 
-console.log(new Date().getMinutes())
+
+//公告
+app.post('/addAnn',AnnService.addAnn);
+app.post('/getAnnListByTopicId',AnnService.getAnnListByTopicId);
+app.post('/getAnnListByTecAcc',AnnService.getAnnListByTecAcc);
+app.post('/deleteAnnById',AnnService.deleteAnnById)
 
 
 
